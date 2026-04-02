@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Release notes are generated automatically from conventional commits. -->
 
+## 1.0.0 (2026-04-02)
+
+
+### Features
+
+* restructure as pnpm workspace with focused packages ([e4c2daf](https://github.com/agentpolicyspecification/aps-typescript/commit/e4c2dafa28aab367ce4059a9f9df040d545a4a07))
+
 ## [0.1.0] - 2026-04-02
 
 ### Added

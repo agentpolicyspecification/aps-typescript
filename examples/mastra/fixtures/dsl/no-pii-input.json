@@ -1,0 +1,8 @@
+{
+  "condition": {
+    "field": "messages.0.content",
+    "contains": ["password", "secret", "ssn", "social security"]
+  },
+  "action": "deny",
+  "reason": "Message contains potentially sensitive information."
+}

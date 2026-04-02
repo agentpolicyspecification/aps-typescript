@@ -1,0 +1,7 @@
+{
+  "condition": {
+    "field": "response.content",
+    "contains": ["password"]
+  },
+  "action": "deny"
+}

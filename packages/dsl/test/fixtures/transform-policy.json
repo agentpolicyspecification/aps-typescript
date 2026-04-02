@@ -1,0 +1,10 @@
+{
+  "condition": {
+    "field": "response.content",
+    "contains": ["hello"]
+  },
+  "action": "transform",
+  "transformation": {
+    "response.content": "Hi {{metadata.agent_id}}"
+  }
+}

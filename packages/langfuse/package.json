@@ -1,0 +1,40 @@
+{
+  "name": "@agentpolicyspecification/langfuse",
+  "version": "0.1.0",
+  "description": "Langfuse audit handler for the Agent Policy Specification (APS)",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "type": "module",
+  "exports": {
+    ".": {
+      "import": "./dist/index.js",
+      "types": "./dist/index.d.ts"
+    }
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests"
+  },
+  "dependencies": {
+    "@agentpolicyspecification/core": "workspace:*",
+    "@langfuse/otel": "^5.0.0",
+    "@opentelemetry/api": "^1.9.0",
+    "@opentelemetry/sdk-trace-base": "^2.0.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.4.0"
+  },
+  "peerDependencies": {
+    "@opentelemetry/api": "^1.9.0"
+  },
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/agentpolicyspecification/aps-typescript.git"
+  }
+}

@@ -1,0 +1,125 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://agentpolicyspecification.github.io/spec/schemas/dsl-policy.schema.json",
+  "title": "DSLPolicy",
+  "description": "A single Agent Policy Specification DSL policy rule",
+  "type": "object",
+  "required": ["condition", "action"],
+  "additionalProperties": false,
+  "properties": {
+    "condition": {
+      "$ref": "#/definitions/Condition"
+    },
+    "action": {
+      "type": "string",
+      "enum": ["allow", "deny", "transform"],
+      "description": "The action to take when the condition matches"
+    },
+    "reason": {
+      "type": "string",
+      "description": "Optional human-readable reason for the action, typically used with deny"
+    },
+    "transformation": {
+      "type": "object",
+      "description": "Field transformations to apply when action is 'transform'. Keys are dot-notation field paths, values are template strings supporting {{field.path}} interpolation.",
+      "additionalProperties": {
+        "type": "string"
+      }
+    }
+  },
+  "if": {
+    "properties": { "action": { "const": "transform" } }
+  },
+  "then": {
+    "required": ["transformation"]
+  },
+  "definitions": {
+    "Condition": {
+      "description": "A condition that is evaluated against the context",
+      "oneOf": [
+        { "$ref": "#/definitions/EqualsCondition" },
+        { "$ref": "#/definitions/ContainsCondition" },
+        { "$ref": "#/definitions/NotInCondition" },
+        { "$ref": "#/definitions/GreaterThanCondition" },
+        { "$ref": "#/definitions/AlwaysCondition" }
+      ]
+    },
+    "EqualsCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value strictly equals the operand",
+      "required": ["field", "equals"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field in the context (e.g. 'tool_name', 'messages.0.content')"
+        },
+        "equals": {
+          "description": "The value to compare against using strict equality"
+        }
+      }
+    },
+    "ContainsCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value contains any of the given substrings (case-insensitive)",
+      "required": ["field", "contains"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field in the context"
+        },
+        "contains": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "List of substrings to search for"
+        }
+      }
+    },
+    "NotInCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value is not present in the given list",
+      "required": ["field", "not_in"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field in the context"
+        },
+        "not_in": {
+          "type": "array",
+          "description": "List of values the field must not be equal to"
+        }
+      }
+    },
+    "GreaterThanCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value is numerically greater than the operand",
+      "required": ["field", "greater_than"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field in the context"
+        },
+        "greater_than": {
+          "type": "number",
+          "description": "The numeric threshold"
+        }
+      }
+    },
+    "AlwaysCondition": {
+      "type": "object",
+      "description": "Always matches, regardless of context",
+      "required": ["always"],
+      "additionalProperties": false,
+      "properties": {
+        "always": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

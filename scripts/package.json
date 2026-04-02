@@ -1,0 +1,8 @@
+{
+  "name": "@aps/scripts",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "download-schemas": "node download-schemas.mjs"
+  }
+}

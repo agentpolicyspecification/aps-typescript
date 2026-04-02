@@ -1,0 +1,130 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentpolicyspecification.github.io/schemas/policy-decision.schema.json",
+  "title": "PolicyDecision",
+  "description": "The result produced by a policy evaluation at any interception point.",
+  "type": "object",
+  "required": ["decision"],
+  "oneOf": [
+    { "$ref": "#/$defs/AllowDecision" },
+    { "$ref": "#/$defs/DenyDecision" },
+    { "$ref": "#/$defs/RedactDecision" },
+    { "$ref": "#/$defs/TransformDecision" },
+    { "$ref": "#/$defs/AuditDecision" }
+  ],
+  "$defs": {
+    "AllowDecision": {
+      "type": "object",
+      "required": ["decision"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "const": "allow" }
+      }
+    },
+    "DenyDecision": {
+      "type": "object",
+      "required": ["decision"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "const": "deny" },
+        "reason": {
+          "type": "string",
+          "description": "Human-readable explanation for the denial. MAY be omitted for security-sensitive denials."
+        },
+        "policy_id": {
+          "type": "string",
+          "description": "Identifier of the policy that produced this denial."
+        }
+      }
+    },
+    "RedactDecision": {
+      "type": "object",
+      "required": ["decision", "redactions"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "const": "redact" },
+        "redactions": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "$ref": "#/$defs/Redaction" }
+        }
+      }
+    },
+    "TransformDecision": {
+      "type": "object",
+      "required": ["decision", "transformation"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "const": "transform" },
+        "transformation": { "$ref": "#/$defs/Transformation" }
+      }
+    },
+    "AuditDecision": {
+      "type": "object",
+      "required": ["decision"],
+      "additionalProperties": false,
+      "properties": {
+        "decision": { "type": "string", "const": "audit" },
+        "reason": {
+          "type": "string",
+          "description": "Optional note to include in the audit record."
+        }
+      }
+    },
+    "Redaction": {
+      "type": "object",
+      "required": ["field", "strategy"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field being redacted (e.g. 'response.content')."
+        },
+        "strategy": {
+          "type": "string",
+          "enum": ["mask", "remove", "replace"],
+          "description": "'mask' replaces with a fixed string, 'remove' deletes the field, 'replace' substitutes matched patterns."
+        },
+        "replacement": {
+          "type": "string",
+          "description": "Replacement string. Required when strategy is 'mask' or 'replace'."
+        },
+        "pattern": {
+          "type": "string",
+          "description": "Regex pattern identifying the content to redact. Required when strategy is 'replace'."
+        }
+      }
+    },
+    "Transformation": {
+      "type": "object",
+      "required": ["operations"],
+      "additionalProperties": false,
+      "properties": {
+        "operations": {
+          "type": "array",
+          "description": "Ordered list of transformation operations to apply.",
+          "items": {
+            "type": "object",
+            "required": ["op", "field", "value"],
+            "additionalProperties": false,
+            "properties": {
+              "op": {
+                "type": "string",
+                "enum": ["set", "prepend", "append"],
+                "description": "'set' replaces the field value, 'prepend'/'append' adds content to a string field."
+              },
+              "field": {
+                "type": "string",
+                "description": "Dot-notation path to the field to transform."
+              },
+              "value": {
+                "description": "The value to apply. Type must match the target field.",
+                "tsType": "unknown"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

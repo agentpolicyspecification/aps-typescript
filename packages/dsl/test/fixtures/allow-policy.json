@@ -1,0 +1,7 @@
+{
+  "condition": {
+    "field": "messages.0.content",
+    "contains": ["hello"]
+  },
+  "action": "allow"
+}

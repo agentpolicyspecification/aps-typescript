@@ -1,0 +1,26 @@
+{
+  "name": "@agentpolicyspecification/mastra",
+  "version": "0.1.0",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests"
+  },
+  "dependencies": {
+    "@agentpolicyspecification/core": "workspace:*"
+  },
+  "peerDependencies": {
+    "@mastra/core": ">=1.0.0"
+  },
+  "devDependencies": {
+    "@jest/globals": "^29.5.0",
+    "@mastra/core": "^1.20.0",
+    "@types/jest": "^29.5.0",
+    "@types/node": "^20.0.0",
+    "jest": "^29.5.0",
+    "ts-jest": "^29.1.0",
+    "typescript": "^5.4.0"
+  }
+}

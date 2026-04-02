@@ -1,0 +1,7 @@
+{
+  "condition": {
+    "field": "tool_name",
+    "equals": "deleteAllUsers"
+  },
+  "action": "deny"
+}

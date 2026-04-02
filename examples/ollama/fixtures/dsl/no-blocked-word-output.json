@@ -1,0 +1,7 @@
+{
+  "condition": {
+    "field": "response.content",
+    "contains": ["confidential", "internal only", "do not share"]
+  },
+  "action": "deny"
+}

@@ -1,8 +1,9 @@
 {
   "$schema": "https://json-schema.org/draft/2020-12/schema",
-  "$id": "https://agentpolicyspecification.github.io/schemas/policy-decision.schema.json",
+  "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/policy-decision.schema.json",
   "title": "PolicyDecision",
   "description": "The result produced by a policy evaluation at any interception point.",
+  "allOf": [{ "$ref": "./base.schema.json" }],
   "type": "object",
   "required": ["decision"],
   "oneOf": [
@@ -18,7 +19,11 @@
       "required": ["decision"],
       "additionalProperties": false,
       "properties": {
-        "decision": { "type": "string", "const": "allow" }
+        "decision": { "type": "string", "const": "allow" },
+        "audit": {
+          "type": "boolean",
+          "description": "When true, an audit record is also produced for this interaction."
+        }
       }
     },
     "DenyDecision": {
@@ -34,6 +39,10 @@
         "policy_id": {
           "type": "string",
           "description": "Identifier of the policy that produced this denial."
+        },
+        "audit": {
+          "type": "boolean",
+          "description": "When true, an audit record is also produced for this interaction."
         }
       }
     },
@@ -47,6 +56,10 @@
           "type": "array",
           "minItems": 1,
           "items": { "$ref": "#/$defs/Redaction" }
+        },
+        "audit": {
+          "type": "boolean",
+          "description": "When true, an audit record is also produced for this interaction."
         }
       }
     },
@@ -56,13 +69,18 @@
       "additionalProperties": false,
       "properties": {
         "decision": { "type": "string", "const": "transform" },
-        "transformation": { "$ref": "#/$defs/Transformation" }
+        "transformation": { "$ref": "#/$defs/Transformation" },
+        "audit": {
+          "type": "boolean",
+          "description": "When true, an audit record is also produced for this interaction."
+        }
       }
     },
     "AuditDecision": {
       "type": "object",
       "required": ["decision"],
       "additionalProperties": false,
+      "description": "Produces only an audit record; the interaction proceeds unchanged.",
       "properties": {
         "decision": { "type": "string", "const": "audit" },
         "reason": {
@@ -118,8 +136,7 @@
                 "description": "Dot-notation path to the field to transform."
               },
               "value": {
-                "description": "The value to apply. Type must match the target field.",
-                "tsType": "unknown"
+                "description": "The value to apply. Type must match the target field."
               }
             }
           }

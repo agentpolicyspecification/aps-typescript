@@ -11,6 +11,8 @@ const schemas = [
   'policy-decision.schema.json',
   'tool-call-context.schema.json',
   'dsl-policy.schema.json',
+  'policy-set.schema.json',
+  'base.schema.json'
 ];
 
 const baseUrl = 'https://raw.githubusercontent.com/agentpolicyspecification/spec/refs/heads/main/schemas/v0.1.0';

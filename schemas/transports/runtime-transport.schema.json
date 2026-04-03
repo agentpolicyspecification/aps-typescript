@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/transports/runtime.schema.json",
+    "title": "RuntimePolicy",
+    "description": "A programmatic policy implemented as a typed class in the agent runtime. No file or network transport — evaluated in-process.",
+    "type": "object",
+    "required": [
+        "transport",
+        "class"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "transport": {
+            "const": "runtime"
+        },
+        "class": {
+            "type": "string",
+            "description": "Fully qualified class or module name implementing the APS policy interface"
+        },
+        "applies_to": {
+            "$ref": "../shared/applies-to.schema.json"
+        }
+    }
+}

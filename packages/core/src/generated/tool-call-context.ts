@@ -4,7 +4,7 @@
 /**
  * The evaluation input provided to policies at the Tool Call Interception point.
  */
-export interface ToolCallContext {
+export type ToolCallContext = ApsBase & {
   /**
    * The name of the tool the LLM has requested to invoke.
    */
@@ -17,17 +17,27 @@ export interface ToolCallContext {
   };
   calling_message: AssistantMessage;
   metadata: Metadata;
+};
+
+/**
+ * Base schema for the Agent Policy Specification v0.1.0. All other APS schemas extend this schema. Defines shared types used across the specification.
+ */
+export interface ApsBase {
+  [k: string]: unknown;
 }
+/**
+ * A message produced by the LLM (role must be 'assistant').
+ */
 export interface AssistantMessage {
-  /**
-   * Always 'assistant' — this is the message that produced the tool call.
-   */
   role: "assistant";
   /**
-   * The text content of the assistant message that triggered the tool call.
+   * The text content of the assistant message.
    */
   content: string;
 }
+/**
+ * Common metadata attached to every APS context object.
+ */
 export interface Metadata {
   /**
    * Unique identifier for the agent that owns this session.

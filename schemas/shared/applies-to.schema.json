@@ -1,0 +1,31 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/shared/applies-to.schema.json",
+    "title": "AppliesTo",
+    "description": "Scopes a policy to specific interception points and/or tools. Omit to apply to all.",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "interception_points": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": [
+                    "input",
+                    "tool_call",
+                    "output"
+                ]
+            },
+            "minItems": 1,
+            "uniqueItems": true
+        },
+        "tools": {
+            "type": "array",
+            "description": "Tool names to match. Supports * as a suffix wildcard. Only meaningful when interception_points includes tool_call.",
+            "items": {
+                "type": "string"
+            },
+            "uniqueItems": true
+        }
+    }
+}

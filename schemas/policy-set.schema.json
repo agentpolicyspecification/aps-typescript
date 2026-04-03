@@ -1,0 +1,183 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/policy-set.schema.json",
+  "title": "PolicySet",
+  "description": "A collection of DSL policies with interception point and tool scope bindings",
+  "allOf": [{ "$ref": "./base.schema.json" }],
+  "type": "object",
+  "required": ["aps_version", "policies"],
+  "additionalProperties": false,
+  "properties": {
+    "aps_version": {
+      "type": "string",
+      "description": "The APS specification version this policy set targets (e.g. '0.1.0').",
+      "pattern": "^\\d+\\.\\d+\\.\\d+$"
+    },
+    "policies": {
+      "type": "array",
+      "description": "The list of policies in this set",
+      "items": { "$ref": "#/$defs/PolicyEntry" }
+    }
+  },
+  "$defs": {
+    "PolicyEntry": {
+      "title": "PolicyEntry",
+      "description": "A DSL policy rule with optional scope restrictions",
+      "type": "object",
+      "required": ["condition", "action"],
+      "additionalProperties": false,
+      "properties": {
+        "condition": {
+          "$ref": "#/$defs/Condition"
+        },
+        "action": {
+          "type": "string",
+          "enum": ["allow", "deny", "redact", "transform", "audit"],
+          "description": "The action to take when the condition matches"
+        },
+        "reason": {
+          "type": "string",
+          "description": "Optional human-readable reason, typically used with deny"
+        },
+        "redactions": {
+          "type": "array",
+          "description": "Redaction instructions to apply when action is 'redact'.",
+          "minItems": 1,
+          "items": {
+            "type": "object",
+            "required": ["field", "strategy"],
+            "additionalProperties": false,
+            "properties": {
+              "field": {
+                "type": "string",
+                "description": "Dot-notation path to the field being redacted (e.g. 'response.content')."
+              },
+              "strategy": {
+                "type": "string",
+                "enum": ["mask", "remove", "replace"],
+                "description": "'mask' replaces with a fixed string, 'remove' deletes the field, 'replace' substitutes matched patterns."
+              },
+              "replacement": {
+                "type": "string",
+                "description": "Replacement string. Required when strategy is 'mask' or 'replace'."
+              },
+              "pattern": {
+                "type": "string",
+                "description": "Regex pattern identifying the content to redact. Required when strategy is 'replace'."
+              }
+            }
+          }
+        },
+        "transformation": {
+          "type": "object",
+          "description": "Field transformations when action is 'transform'. Keys are dot-notation field paths, values are template strings supporting {{field.path}} interpolation.",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "applies_to": {
+          "type": "array",
+          "description": "Interception points this policy applies to. Omit to apply to all points.",
+          "items": {
+            "type": "string",
+            "enum": ["input", "output", "tool_call"]
+          },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "tools": {
+          "type": "array",
+          "description": "Tool names this policy applies to. Only evaluated when applies_to includes 'tool_call'. Omit to apply to all tools.",
+          "items": {
+            "type": "string"
+          },
+          "uniqueItems": true
+        }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "action": { "const": "transform" } } },
+          "then": { "required": ["transformation"] }
+        },
+        {
+          "if": { "properties": { "action": { "const": "redact" } } },
+          "then": { "required": ["redactions"] }
+        }
+      ]
+    },
+    "Condition": {
+      "description": "A condition evaluated against the context",
+      "oneOf": [
+        { "$ref": "#/$defs/EqualsCondition" },
+        { "$ref": "#/$defs/ContainsCondition" },
+        { "$ref": "#/$defs/NotInCondition" },
+        { "$ref": "#/$defs/GreaterThanCondition" },
+        { "$ref": "#/$defs/AlwaysCondition" }
+      ]
+    },
+    "EqualsCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value strictly equals the operand",
+      "required": ["field", "equals"],
+      "additionalProperties": false,
+      "properties": {
+        "field": {
+          "type": "string",
+          "description": "Dot-notation path to the field in the context (e.g. 'tool_name', 'messages.0.content')"
+        },
+        "equals": {
+          "description": "The value to compare against using strict equality"
+        }
+      }
+    },
+    "ContainsCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value contains any of the given substrings (case-insensitive)",
+      "required": ["field", "contains"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "contains": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1
+        }
+      }
+    },
+    "NotInCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value is not present in the given list",
+      "required": ["field", "not_in"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "not_in": {
+          "type": "array",
+          "description": "List of values the field must not be equal to"
+        }
+      }
+    },
+    "GreaterThanCondition": {
+      "type": "object",
+      "description": "Matches when the resolved field value is numerically greater than the operand",
+      "required": ["field", "greater_than"],
+      "additionalProperties": false,
+      "properties": {
+        "field": { "type": "string" },
+        "greater_than": { "type": "number" }
+      }
+    },
+    "AlwaysCondition": {
+      "type": "object",
+      "description": "Always matches, regardless of context",
+      "required": ["always"],
+      "additionalProperties": false,
+      "properties": {
+        "always": {
+          "type": "boolean",
+          "const": true
+        }
+      }
+    }
+  }
+}

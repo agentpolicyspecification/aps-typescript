@@ -1,0 +1,24 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/transports/wasm.schema.json",
+    "title": "WasmPolicy",
+    "description": "A Rego policy compiled to a WASM bundle, evaluated in-process.",
+    "type": "object",
+    "required": [
+        "transport",
+        "path"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "transport": {
+            "const": "wasm"
+        },
+        "path": {
+            "type": "string",
+            "description": "Path to the compiled .wasm bundle file"
+        },
+        "applies_to": {
+            "$ref": "../shared/applies-to.schema.json"
+        }
+    }
+}

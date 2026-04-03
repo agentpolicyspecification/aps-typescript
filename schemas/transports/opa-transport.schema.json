@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/transports/opa.schema.json",
+    "title": "OpaPolicy",
+    "description": "A policy evaluated by a remote OPA server.",
+    "type": "object",
+    "required": [
+        "transport",
+        "url"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "transport": {
+            "const": "opa"
+        },
+        "url": {
+            "type": "string",
+            "format": "uri",
+            "description": "The OPA data API endpoint, e.g. https://opa.internal/v1/data/aps"
+        },
+        "headers": {
+            "type": "object",
+            "description": "HTTP headers to include in every request. Values support ${ENV_VAR} interpolation.",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "applies_to": {
+            "$ref": "../shared/applies-to.schema.json"
+        }
+    }
+}

@@ -34,6 +34,11 @@ export type {
   AlwaysCondition,
 } from './generated/dsl-policy.js';
 
+export type {
+  PolicySet as JsonPolicySet,
+  PolicyEntry,
+} from './generated/policy-set.js';
+
 export type { InputPolicy, ToolCallPolicy, OutputPolicy } from "./core/policy.js";
 
 export {

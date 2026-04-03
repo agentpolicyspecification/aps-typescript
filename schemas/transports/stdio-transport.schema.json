@@ -1,0 +1,38 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/transports/stdio.schema.json",
+    "title": "StdioPolicy",
+    "description": "A policy server communicating over STDIO. Mirrors the MCP server pattern.",
+    "type": "object",
+    "required": [
+        "transport",
+        "command"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "transport": {
+            "const": "stdio"
+        },
+        "command": {
+            "type": "string",
+            "description": "The command to launch the policy server process"
+        },
+        "args": {
+            "type": "array",
+            "description": "Arguments to pass to the command",
+            "items": {
+                "type": "string"
+            }
+        },
+        "env": {
+            "type": "object",
+            "description": "Environment variables to set for the process. Values support ${ENV_VAR} interpolation.",
+            "additionalProperties": {
+                "type": "string"
+            }
+        },
+        "applies_to": {
+            "$ref": "../shared/applies-to.schema.json"
+        }
+    }
+}

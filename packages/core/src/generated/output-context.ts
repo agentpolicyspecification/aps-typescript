@@ -4,23 +4,33 @@
 /**
  * The evaluation input provided to policies at the Output Interception point.
  */
-export interface OutputContext {
+export type OutputContext = ApsBase & {
   response: AssistantMessage;
   metadata: Metadata;
+};
+
+/**
+ * Base schema for the Agent Policy Specification v0.1.0. All other APS schemas extend this schema. Defines shared types used across the specification.
+ */
+export interface ApsBase {
+  [k: string]: unknown;
 }
+/**
+ * A message produced by the LLM (role must be 'assistant').
+ */
 export interface AssistantMessage {
-  /**
-   * Always 'assistant' — this is the LLM response being evaluated.
-   */
   role: "assistant";
   /**
-   * The text content of the LLM response.
+   * The text content of the assistant message.
    */
   content: string;
 }
+/**
+ * Common metadata attached to every APS context object.
+ */
 export interface Metadata {
   /**
-   * Unique identifier for the agent receiving the response.
+   * Unique identifier for the agent that owns this session.
    */
   agent_id: string;
   /**

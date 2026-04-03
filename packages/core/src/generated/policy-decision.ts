@@ -4,10 +4,21 @@
 /**
  * The result produced by a policy evaluation at any interception point.
  */
-export type PolicyDecision = AllowDecision | DenyDecision | RedactDecision | TransformDecision | AuditDecision;
+export type PolicyDecision = ApsBase &
+  (AllowDecision | DenyDecision | RedactDecision | TransformDecision | AuditDecision);
 
+/**
+ * Base schema for the Agent Policy Specification v0.1.0. All other APS schemas extend this schema. Defines shared types used across the specification.
+ */
+export interface ApsBase {
+  [k: string]: unknown;
+}
 export interface AllowDecision {
   decision: "allow";
+  /**
+   * When true, an audit record is also produced for this interaction.
+   */
+  audit?: boolean;
 }
 export interface DenyDecision {
   decision: "deny";
@@ -19,6 +30,10 @@ export interface DenyDecision {
    * Identifier of the policy that produced this denial.
    */
   policy_id?: string;
+  /**
+   * When true, an audit record is also produced for this interaction.
+   */
+  audit?: boolean;
 }
 export interface RedactDecision {
   decision: "redact";
@@ -26,6 +41,10 @@ export interface RedactDecision {
    * @minItems 1
    */
   redactions: [Redaction, ...Redaction[]];
+  /**
+   * When true, an audit record is also produced for this interaction.
+   */
+  audit?: boolean;
 }
 export interface Redaction {
   /**
@@ -48,6 +67,10 @@ export interface Redaction {
 export interface TransformDecision {
   decision: "transform";
   transformation: Transformation;
+  /**
+   * When true, an audit record is also produced for this interaction.
+   */
+  audit?: boolean;
 }
 export interface Transformation {
   /**
@@ -65,9 +88,14 @@ export interface Transformation {
     /**
      * The value to apply. Type must match the target field.
      */
-    value: unknown;
+    value: {
+      [k: string]: unknown;
+    };
   }[];
 }
+/**
+ * Produces only an audit record; the interaction proceeds unchanged.
+ */
 export interface AuditDecision {
   decision: "audit";
   /**

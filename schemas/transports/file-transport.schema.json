@@ -1,0 +1,32 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/transports/file.schema.json",
+    "title": "FilePolicy",
+    "description": "A policy loaded from a local file. Supports DSL and Rego types.",
+    "type": "object",
+    "required": [
+        "transport",
+        "type",
+        "path"
+    ],
+    "additionalProperties": false,
+    "properties": {
+        "transport": {
+            "const": "file"
+        },
+        "type": {
+            "type": "string",
+            "enum": [
+                "dsl",
+                "rego"
+            ]
+        },
+        "path": {
+            "type": "string",
+            "description": "Path to the policy file, relative to the config file"
+        },
+        "applies_to": {
+            "$ref": "../shared/applies-to.schema.json"
+        }
+    }
+}

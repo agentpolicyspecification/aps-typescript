@@ -1,23 +1,53 @@
 {
-  "$schema": "http://json-schema.org/draft-07/schema#",
-  "$id": "https://agentpolicyspecification.github.io/spec/schemas/dsl-policy.schema.json",
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/dsl-policy.schema.json",
   "title": "DSLPolicy",
   "description": "A single Agent Policy Specification DSL policy rule",
+  "allOf": [{ "$ref": "./base.schema.json" }],
   "type": "object",
   "required": ["condition", "action"],
   "additionalProperties": false,
   "properties": {
     "condition": {
-      "$ref": "#/definitions/Condition"
+      "$ref": "#/$defs/Condition"
     },
     "action": {
       "type": "string",
-      "enum": ["allow", "deny", "transform"],
+      "enum": ["allow", "deny", "redact", "transform", "audit"],
       "description": "The action to take when the condition matches"
     },
     "reason": {
       "type": "string",
       "description": "Optional human-readable reason for the action, typically used with deny"
+    },
+    "redactions": {
+      "type": "array",
+      "description": "Redaction instructions to apply when action is 'redact'.",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "required": ["field", "strategy"],
+        "additionalProperties": false,
+        "properties": {
+          "field": {
+            "type": "string",
+            "description": "Dot-notation path to the field being redacted (e.g. 'response.content')."
+          },
+          "strategy": {
+            "type": "string",
+            "enum": ["mask", "remove", "replace"],
+            "description": "'mask' replaces with a fixed string, 'remove' deletes the field, 'replace' substitutes matched patterns."
+          },
+          "replacement": {
+            "type": "string",
+            "description": "Replacement string. Required when strategy is 'mask' or 'replace'."
+          },
+          "pattern": {
+            "type": "string",
+            "description": "Regex pattern identifying the content to redact. Required when strategy is 'replace'."
+          }
+        }
+      }
     },
     "transformation": {
       "type": "object",
@@ -27,21 +57,25 @@
       }
     }
   },
-  "if": {
-    "properties": { "action": { "const": "transform" } }
-  },
-  "then": {
-    "required": ["transformation"]
-  },
-  "definitions": {
+  "allOf": [
+    {
+      "if": { "properties": { "action": { "const": "transform" } } },
+      "then": { "required": ["transformation"] }
+    },
+    {
+      "if": { "properties": { "action": { "const": "redact" } } },
+      "then": { "required": ["redactions"] }
+    }
+  ],
+  "$defs": {
     "Condition": {
       "description": "A condition that is evaluated against the context",
       "oneOf": [
-        { "$ref": "#/definitions/EqualsCondition" },
-        { "$ref": "#/definitions/ContainsCondition" },
-        { "$ref": "#/definitions/NotInCondition" },
-        { "$ref": "#/definitions/GreaterThanCondition" },
-        { "$ref": "#/definitions/AlwaysCondition" }
+        { "$ref": "#/$defs/EqualsCondition" },
+        { "$ref": "#/$defs/ContainsCondition" },
+        { "$ref": "#/$defs/NotInCondition" },
+        { "$ref": "#/$defs/GreaterThanCondition" },
+        { "$ref": "#/$defs/AlwaysCondition" }
       ]
     },
     "EqualsCondition": {

@@ -1,8 +1,10 @@
+import { readFile } from "node:fs/promises";
 import type { InputPolicy, OutputPolicy, ToolCallPolicy } from "../core/policy.js";
 import type { InputContext } from "../generated/input-context.js";
 import type { OutputContext } from "../generated/output-context.js";
 import type { ToolCallContext } from "../generated/tool-call-context.js";
 import type { PolicyDecision } from "../generated/policy-decision.js";
+import type { PolicySet as JsonPolicySet, PolicyEntry } from "../generated/policy-set.js";
 import { AuditRecord, InterceptionPoint, PolicyDenialError, PolicyEvaluationError } from "../core/errors.js";
 import type { PolicySet } from "./policy-set.js";
 
@@ -20,6 +22,42 @@ export class ApsEngine {
   constructor({ policySet, onAudit }: ApsEngineOptions) {
     this.policySet = policySet;
     this.onAudit = onAudit;
+  }
+
+  static async fromJson(absolutePath: string, options?: Pick<ApsEngineOptions, "onAudit">): Promise<ApsEngine> {
+    const raw = await readFile(absolutePath, "utf-8");
+    const jsonPolicySet = JSON.parse(raw) as JsonPolicySet;
+
+    const input: InputPolicy[] = [];
+    const tool_call: ToolCallPolicy[] = [];
+    const output: OutputPolicy[] = [];
+
+    for (const [index, entry] of jsonPolicySet.policies.entries()) {
+      const id = `policy-${index}`;
+      const appliesToAll = !entry.applies_to || entry.applies_to.length === 0;
+
+      if (appliesToAll || entry.applies_to!.includes("input")) {
+        input.push({ id, evaluate: (ctx) => evaluateEntry(entry, ctx) });
+      }
+
+      if (appliesToAll || entry.applies_to!.includes("tool_call")) {
+        tool_call.push({
+          id,
+          evaluate: (ctx) => {
+            if (entry.tools && entry.tools.length > 0 && !entry.tools.includes(ctx.tool_name)) {
+              return Promise.resolve<PolicyDecision>({ decision: "allow" });
+            }
+            return evaluateEntry(entry, ctx);
+          },
+        });
+      }
+
+      if (appliesToAll || entry.applies_to!.includes("output")) {
+        output.push({ id, evaluate: (ctx) => evaluateEntry(entry, ctx) });
+      }
+    }
+
+    return new ApsEngine({ policySet: { input, tool_call, output }, ...options });
   }
 
   async evaluateInput(context: InputContext): Promise<void> {
@@ -118,4 +156,42 @@ export class ApsEngine {
       await this.onAudit(record);
     }
   }
+}
+
+// ── fromJson helpers ──────────────────────────────────────────────────────────
+
+function evaluateEntry(entry: PolicyEntry, ctx: unknown): Promise<PolicyDecision> {
+  if (!evaluateCondition(entry.condition, ctx)) {
+    return Promise.resolve<PolicyDecision>({ decision: "allow" });
+  }
+  return Promise.resolve(buildDecision(entry, ctx));
+}
+
+function evaluateCondition(condition: PolicyEntry["condition"], ctx: unknown): boolean {
+  if ("always" in condition) return true;
+  const value = resolveField(ctx, (condition as { field: string }).field);
+  if ("equals" in condition) return value === (condition as { equals: unknown }).equals;
+  if ("contains" in condition) return (condition as { contains: string[] }).contains.some(v => String(value).toLowerCase().includes(v.toLowerCase()));
+  if ("not_in" in condition) return !(condition as { not_in: unknown[] }).not_in.includes(value);
+  if ("greater_than" in condition) return Number(value) > (condition as { greater_than: number }).greater_than;
+  return false;
+}
+
+function resolveField(obj: unknown, fieldPath: string): unknown {
+  return fieldPath.split(".").reduce<unknown>((acc, key) => (acc as Record<string, unknown>)?.[key], obj);
+}
+
+function buildDecision(entry: PolicyEntry, ctx: unknown): PolicyDecision {
+  if (entry.action === "allow") return { decision: "allow" };
+  if (entry.action === "deny") return { decision: "deny", ...(entry.reason && { reason: entry.reason }) };
+  return {
+    decision: "transform",
+    transformation: {
+      operations: Object.entries(entry.transformation ?? {}).map(([field, template]) => ({
+        field,
+        op: "set" as const,
+        value: template.replace(/\{\{(.+?)\}\}/g, (_, expr: string) => String(resolveField(ctx, expr.trim()) ?? "")) as unknown as { [k: string]: unknown },
+      })),
+    },
+  };
 }

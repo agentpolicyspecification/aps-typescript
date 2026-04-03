@@ -1,11 +1,12 @@
 {
-  "name": "aps-typescript",
+  "name": "@agentpolicyspecification/root",
   "private": true,
   "scripts": {
     "build": "pnpm -r run build",
     "test": "pnpm -r run test",
     "lint": "pnpm -r run lint",
-    "download-schemas": "pnpm --filter @aps/scripts run download-schemas"
+    "download-schemas": "pnpm --filter @aps/scripts run download-schemas",
+    "generate-types": "pnpm --filter @agentpolicyspecification/core run generate-types"
   },
   "devDependencies": {
     "jest": "^30.3.0"

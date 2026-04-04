@@ -2,11 +2,14 @@
 // This file is auto-generated from dsl-policy.schema.json. Do not edit manually.
 
 /**
+ * A condition that is evaluated against the context
+ */
+export type Condition = EqualsCondition | ContainsCondition | NotInCondition | GreaterThanCondition | AlwaysCondition;
+
+/**
  * A single Agent Policy Specification DSL policy rule
  */
-export type DSLPolicy = {
-  [k: string]: unknown;
-} & {
+export interface DSLPolicy {
   condition: Condition;
   /**
    * The action to take when the condition matches
@@ -65,12 +68,7 @@ export type DSLPolicy = {
   transformation?: {
     [k: string]: string;
   };
-};
-/**
- * A condition that is evaluated against the context
- */
-export type Condition = EqualsCondition | ContainsCondition | NotInCondition | GreaterThanCondition | AlwaysCondition;
-
+}
 /**
  * Matches when the resolved field value strictly equals the operand
  */

@@ -22,5 +22,19 @@
     "ollama": "^0.5.0",
     "ts-jest": "^29.1.0",
     "typescript": "^5.4.0"
+  },
+  "author": "Pascal Wilbrink",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/agentpolicyspecification/aps-typescript.git",
+    "directory": "integrations/ollama"
+  },
+  "bugs": {
+    "url": "https://github.com/agentpolicyspecification/aps-typescript/issues"
+  },
+  "homepage": "https://github.com/agentpolicyspecification/aps-typescript/tree/main/integrations/ollama#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

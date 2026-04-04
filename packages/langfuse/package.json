@@ -5,6 +5,7 @@
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
+  "private": true,
   "exports": {
     ".": {
       "import": "./dist/index.js",
@@ -35,6 +36,15 @@
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentpolicyspecification/aps-typescript.git"
+    "url": "git+https://github.com/agentpolicyspecification/aps-typescript.git",
+    "directory": "packages/langfuse"
+  },
+  "author": "Pascal Wilbrink",
+  "bugs": {
+    "url": "https://github.com/agentpolicyspecification/aps-typescript/issues"
+  },
+  "homepage": "https://github.com/agentpolicyspecification/aps-typescript/tree/main/packages/langfuse#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

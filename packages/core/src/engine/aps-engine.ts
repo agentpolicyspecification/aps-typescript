@@ -34,17 +34,19 @@ export class ApsEngine {
 
     for (const [index, entry] of jsonPolicySet.policies.entries()) {
       const id = `policy-${index}`;
-      const appliesToAll = !entry.applies_to || entry.applies_to.length === 0;
+      const appliesTo = entry.applies_to as string[] | undefined;
+      const appliesToAll = !appliesTo || appliesTo.length === 0;
 
-      if (appliesToAll || entry.applies_to!.includes("input")) {
+      if (appliesToAll || appliesTo.includes("input")) {
         input.push({ id, evaluate: (ctx) => evaluateEntry(entry, ctx) });
       }
 
-      if (appliesToAll || entry.applies_to!.includes("tool_call")) {
+      if (appliesToAll || appliesTo.includes("tool_call")) {
         tool_call.push({
           id,
           evaluate: (ctx) => {
-            if (entry.tools && entry.tools.length > 0 && !entry.tools.includes(ctx.tool_name)) {
+            const tools = entry.tools as string[] | undefined;
+            if (tools && tools.length > 0 && !tools.includes(ctx.tool_name)) {
               return Promise.resolve<PolicyDecision>({ decision: "allow" });
             }
             return evaluateEntry(entry, ctx);
@@ -52,7 +54,7 @@ export class ApsEngine {
         });
       }
 
-      if (appliesToAll || entry.applies_to!.includes("output")) {
+      if (appliesToAll || appliesTo.includes("output")) {
         output.push({ id, evaluate: (ctx) => evaluateEntry(entry, ctx) });
       }
     }
@@ -168,12 +170,14 @@ function evaluateEntry(entry: PolicyEntry, ctx: unknown): Promise<PolicyDecision
 }
 
 function evaluateCondition(condition: PolicyEntry["condition"], ctx: unknown): boolean {
-  if ("always" in condition) return true;
-  const value = resolveField(ctx, (condition as { field: string }).field);
-  if ("equals" in condition) return value === (condition as { equals: unknown }).equals;
-  if ("contains" in condition) return (condition as { contains: string[] }).contains.some(v => String(value).toLowerCase().includes(v.toLowerCase()));
-  if ("not_in" in condition) return !(condition as { not_in: unknown[] }).not_in.includes(value);
-  if ("greater_than" in condition) return Number(value) > (condition as { greater_than: number }).greater_than;
+  const cond = condition as unknown as Record<string, unknown>;
+  if ("always" in cond) return true;
+  const field = cond.field as string;
+  const value = resolveField(ctx, field);
+  if ("equals" in cond) return value === cond.equals;
+  if ("contains" in cond) return (cond.contains as string[]).some(v => String(value).toLowerCase().includes(v.toLowerCase()));
+  if ("not_in" in cond) return !(cond.not_in as unknown[]).includes(value);
+  if ("greater_than" in cond) return Number(value) > (cond.greater_than as number);
   return false;
 }
 
@@ -183,14 +187,19 @@ function resolveField(obj: unknown, fieldPath: string): unknown {
 
 function buildDecision(entry: PolicyEntry, ctx: unknown): PolicyDecision {
   if (entry.action === "allow") return { decision: "allow" };
-  if (entry.action === "deny") return { decision: "deny", ...(entry.reason && { reason: entry.reason }) };
+  if (entry.action === "deny") {
+    return {
+      decision: "deny",
+      ...(entry.reason ? { reason: entry.reason } : {}),
+    };
+  }
   return {
     decision: "transform",
     transformation: {
       operations: Object.entries(entry.transformation ?? {}).map(([field, template]) => ({
         field,
         op: "set" as const,
-        value: template.replace(/\{\{(.+?)\}\}/g, (_, expr: string) => String(resolveField(ctx, expr.trim()) ?? "")) as unknown as { [k: string]: unknown },
+        value: template.replace(/\{\{(.+?)\}\}/g, (_: string, expr: string) => String(resolveField(ctx, expr.trim()) ?? "")) as unknown as { [k: string]: unknown },
       })),
     },
   };

@@ -3,7 +3,6 @@
   "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/dsl-policy.schema.json",
   "title": "DSLPolicy",
   "description": "A single Agent Policy Specification DSL policy rule",
-  "allOf": [{ "$ref": "./base.schema.json" }],
   "type": "object",
   "required": ["condition", "action"],
   "additionalProperties": false,
@@ -53,22 +52,11 @@
       "type": "object",
       "description": "Field transformations to apply when action is 'transform'. Keys are dot-notation field paths, values are template strings supporting {{field.path}} interpolation.",
       "additionalProperties": {
-        "type": "string"
+      "type": "string"
       }
-    }
-  },
-  "allOf": [
-    {
-      "if": { "properties": { "action": { "const": "transform" } } },
-      "then": { "required": ["transformation"] }
-    },
-    {
-      "if": { "properties": { "action": { "const": "redact" } } },
-      "then": { "required": ["redactions"] }
-    }
-  ],
-  "$defs": {
-    "Condition": {
+      }
+      },
+      "$defs": {    "Condition": {
       "description": "A condition that is evaluated against the context",
       "oneOf": [
         { "$ref": "#/$defs/EqualsCondition" },

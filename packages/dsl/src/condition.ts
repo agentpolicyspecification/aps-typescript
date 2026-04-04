@@ -17,11 +17,12 @@ const conditionOps: ConditionOperators = {
 export function evaluateCondition(condition: Condition, ctx: AnyContext): boolean {
   if ("always" in condition) return true;
 
-  const value = resolveField(ctx, condition.field);
+  const cond = condition as any;
+  const value = resolveField(ctx, cond.field);
 
   for (const [op, fn] of Object.entries(conditionOps) as [keyof ConditionOperators, ConditionOperators[keyof ConditionOperators]][]) {
-    if (op in condition) {
-      return (fn as (v: unknown, o: unknown) => boolean)(value, (condition as Record<string, unknown>)[op]);
+    if (op in cond) {
+      return (fn as (v: unknown, o: unknown) => boolean)(value, cond[op]);
     }
   }
 

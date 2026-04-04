@@ -3,7 +3,6 @@
   "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/policy-set.schema.json",
   "title": "PolicySet",
   "description": "A collection of DSL policies with interception point and tool scope bindings",
-  "allOf": [{ "$ref": "./base.schema.json" }],
   "type": "object",
   "required": ["aps_version", "policies"],
   "additionalProperties": false,
@@ -93,17 +92,7 @@
           },
           "uniqueItems": true
         }
-      },
-      "allOf": [
-        {
-          "if": { "properties": { "action": { "const": "transform" } } },
-          "then": { "required": ["transformation"] }
-        },
-        {
-          "if": { "properties": { "action": { "const": "redact" } } },
-          "then": { "required": ["redactions"] }
-        }
-      ]
+      }
     },
     "Condition": {
       "description": "A condition evaluated against the context",

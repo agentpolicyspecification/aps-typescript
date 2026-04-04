@@ -1,7 +1,7 @@
 {
   "name": "@agentpolicyspecification/core",
   "version": "0.1.0",
-  "description": "TypeScript implementation of the Agent Policy Specification (APS)",
+  "description": "Core TypeScript implementation of the Agent Policy Specification (APS)",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
   "type": "module",
@@ -12,11 +12,12 @@
     }
   },
   "scripts": {
-    "build": "tsc",
+    "build": "pnpm run generate-types && tsc",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests",
     "lint": "eslint src --ext .ts",
     "example": "tsx examples/basic-usage.ts",
-    "generate-types": "node scripts/generate-types.mjs"
+    "generate-types": "node scripts/generate-types.mjs",
+    "prepublishOnly": "pnpm run test"
   },
   "dependencies": {},
   "devDependencies": {
@@ -30,8 +31,17 @@
     "typescript": "^5.4.0"
   },
   "license": "Apache-2.0",
+  "author": "Pascal Wilbrink",
   "repository": {
     "type": "git",
-    "url": "https://github.com/agentpolicyspecification/aps-typescript.git"
+    "url": "git+https://github.com/agentpolicyspecification/aps-typescript.git",
+    "directory": "packages/core"
+  },
+  "bugs": {
+    "url": "https://github.com/agentpolicyspecification/aps-typescript/issues"
+  },
+  "homepage": "https://github.com/agentpolicyspecification/aps-typescript/tree/main/packages/core#readme",
+  "publishConfig": {
+    "access": "public"
   }
 }

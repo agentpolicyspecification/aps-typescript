@@ -4,15 +4,8 @@
 /**
  * The result produced by a policy evaluation at any interception point.
  */
-export type PolicyDecision = ApsBase &
-  (AllowDecision | DenyDecision | RedactDecision | TransformDecision | AuditDecision);
+export type PolicyDecision = AllowDecision | DenyDecision | RedactDecision | TransformDecision | AuditDecision;
 
-/**
- * Base schema for the Agent Policy Specification v0.1.0. All other APS schemas extend this schema. Defines shared types used across the specification.
- */
-export interface ApsBase {
-  [k: string]: unknown;
-}
 export interface AllowDecision {
   decision: "allow";
   /**

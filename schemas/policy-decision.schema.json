@@ -3,7 +3,6 @@
   "$id": "https://agentpolicyspecification.github.io/schemas/v0.1.0/policy-decision.schema.json",
   "title": "PolicyDecision",
   "description": "The result produced by a policy evaluation at any interception point.",
-  "allOf": [{ "$ref": "./base.schema.json" }],
   "type": "object",
   "required": ["decision"],
   "oneOf": [

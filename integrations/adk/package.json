@@ -1,16 +1,10 @@
 {
-  "name": "@agentpolicyspecification/dsl",
+  "name": "@agentpolicyspecification/adk",
   "version": "0.1.0",
-  "description": "DSL policy adapters for the Agent Policy Specification (APS)",
+  "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "type": "module",
-  "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "types": "./dist/index.d.ts"
-    }
-  },
+  "private": true,
   "scripts": {
     "build": "tsc",
     "test": "NODE_OPTIONS=--experimental-vm-modules jest --passWithNoTests"
@@ -18,25 +12,30 @@
   "dependencies": {
     "@agentpolicyspecification/core": "workspace:*"
   },
+  "peerDependencies": {
+    "@google/adk": "^0.6.1"
+  },
   "devDependencies": {
-    "@jest/globals": "^29.7.0",
+    "@google/adk": "^0.6.1",
+    "@jest/globals": "^29.5.0",
     "@types/jest": "^29.5.0",
     "@types/node": "^20.0.0",
     "jest": "^29.5.0",
+    "ollama": "^0.5.18",
     "ts-jest": "^29.1.0",
     "typescript": "^5.4.0"
   },
+  "author": "Pascal Wilbrink",
   "license": "Apache-2.0",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/agentpolicyspecification/aps-typescript.git",
-    "directory": "packages/dsl"
+    "directory": "integrations/adk"
   },
-  "author": "Pascal Wilbrink",
   "bugs": {
     "url": "https://github.com/agentpolicyspecification/aps-typescript/issues"
   },
-  "homepage": "https://github.com/agentpolicyspecification/aps-typescript/tree/main/packages/dsl#readme",
+  "homepage": "https://github.com/agentpolicyspecification/aps-typescript/tree/main/integrations/adk#readme",
   "publishConfig": {
     "access": "public"
   }

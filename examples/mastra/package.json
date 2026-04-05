@@ -10,7 +10,7 @@
     "@agentpolicyspecification/core": "workspace:*",
     "@agentpolicyspecification/mastra": "workspace:*",
     "@agentpolicyspecification/dsl": "workspace:*",
-    "@mastra/core": "^1.20.0",
+    "@mastra/core": "^1.22.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {

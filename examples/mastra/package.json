@@ -14,7 +14,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@ai-sdk/openai": "^3.0.0",
+    "@ai-sdk/openai": "^3.0.50",
     "@types/node": "^20.0.0",
     "tsx": "^4.7.0",
     "typescript": "^5.4.0"

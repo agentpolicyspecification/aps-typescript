@@ -10,7 +10,7 @@
     "@agentpolicyspecification/core": "workspace:*",
     "@agentpolicyspecification/dsl": "workspace:*",
     "@agentpolicyspecification/ollama": "workspace:*",
-    "ollama": "^0.5.0"
+    "ollama": "^0.6.3"
   },
   "devDependencies": {
     "@types/node": "^20.0.0",

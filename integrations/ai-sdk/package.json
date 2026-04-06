@@ -21,7 +21,7 @@
     "@copilotkit/llmock": "^1.5.1",
     "@ai-sdk/provider": "^3.0.8",
     "@types/jest": "^29.5.0",
-    "@types/node": "^20.0.0",
+    "@types/node": "^25.5.2",
     "ai": "^6.0.0",
     "jest": "^29.5.0",
     "ts-jest": "^29.4.9",

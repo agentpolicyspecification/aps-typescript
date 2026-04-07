@@ -22,7 +22,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.7.0",
-    "@opentelemetry/sdk-trace-base": "^1.30.0",
+    "@opentelemetry/sdk-trace-base": "^2.6.1",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.5.2",
     "jest": "^30.3.0",

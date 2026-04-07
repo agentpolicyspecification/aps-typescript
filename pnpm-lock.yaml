@@ -161,8 +161,8 @@ importers:
         specifier: ^3.0.8
         version: 3.0.8
       '@copilotkit/llmock':
-        specifier: ^1.5.1
-        version: 1.5.1
+        specifier: ^1.7.1
+        version: 1.7.1
       '@types/jest':
         specifier: ^30.0.0
         version: 30.0.0
@@ -780,10 +780,14 @@ packages:
     resolution: {integrity: sha512-Ir+AOibqzrIsL6ajt3Rz3LskB7OiMVHqltZmspbW/TJuTVuyOMirVqAkjfY6JISiLHgyNqicAC8AyHHGzNd/dA==}
     engines: {node: '>=0.1.90'}
 
-  '@copilotkit/llmock@1.5.1':
-    resolution: {integrity: sha512-ZEX8eJ3egtHZtEzGByAKY+MJxzJEupBN6GaGbQw5n0hLH/pVXvDcZMVTqxpYduopN3UmLXY7asbjjUhLX8pvTQ==}
-    deprecated: This package has moved to @copilotkit/aimock
+  '@copilotkit/aimock@1.8.0':
+    resolution: {integrity: sha512-zrkHAkDKARKgueb6rJffSVxpHC5wSwuBd5CVo43RV7UrOCNdNocppbL/ncahnJX0hJOjLxb3KknGaYwnB2t2fQ==}
+    engines: {node: '>=20.15.0'}
     hasBin: true
+
+  '@copilotkit/llmock@1.7.1':
+    resolution: {integrity: sha512-IHBhkowTi8baM67Z5fpFcmeEPwNmzEfSWejZ1hmur/nlNKPdc28n0aD9DUdSfvaRN7wjtHgcOF6RizCgfoqaaQ==}
+    deprecated: This package has moved to @copilotkit/aimock
 
   '@dabh/diagnostics@2.0.8':
     resolution: {integrity: sha512-R4MSXTVnuMzGD7bzHdW2ZhhdPC/igELENcq5IjEverBvq5hn1SXCWcsi6eSsdWP0/Ur+SItRRjAktmdoX/8R/Q==}
@@ -5499,7 +5503,11 @@ snapshots:
 
   '@colors/colors@1.6.0': {}
 
-  '@copilotkit/llmock@1.5.1': {}
+  '@copilotkit/aimock@1.8.0': {}
+
+  '@copilotkit/llmock@1.7.1':
+    dependencies:
+      '@copilotkit/aimock': 1.8.0
 
   '@dabh/diagnostics@2.0.8':
     dependencies:

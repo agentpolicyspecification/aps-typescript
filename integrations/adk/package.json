@@ -17,7 +17,7 @@
   },
   "devDependencies": {
     "@google/adk": "^0.6.1",
-    "@jest/globals": "^29.5.0",
+    "@jest/globals": "^30.3.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.5.2",
     "jest": "^30.3.0",

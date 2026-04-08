@@ -16,7 +16,7 @@
   },
   "devDependencies": {
     "@jest/globals": "^29.5.0",
-    "@mastra/core": "^1.22.0",
+    "@mastra/core": "^1.23.0",
     "@types/jest": "^30.0.0",
     "@types/node": "^25.5.2",
     "jest": "^30.3.0",

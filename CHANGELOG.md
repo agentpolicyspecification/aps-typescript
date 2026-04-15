@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 <!-- Release notes are generated automatically from conventional commits. -->
 
+## [1.0.1](https://github.com/agentpolicyspecification/aps-typescript/compare/v1.0.0...v1.0.1) (2026-04-07)
+
+
+### Features
+
+* Added mastra ([1c5f617](https://github.com/agentpolicyspecification/aps-typescript/commit/1c5f6179ea9187520e6c5fd7353d09f97d9a92d0))
+
+
+### Bug Fixes
+
+* remove Mach-O opa binary and ignore it ([6ed3c73](https://github.com/agentpolicyspecification/aps-typescript/commit/6ed3c73976c4591896181d5fca6e6bee7d3dce2d))
+
 ## 1.0.0 (2026-04-02)
 
 
